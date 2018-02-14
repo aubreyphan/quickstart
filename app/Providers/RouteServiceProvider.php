@@ -23,7 +23,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        //$router->model('task'. 'App\Task');
+        // This small line of code will instruct Laravel to retrieve the Task model that corresponds to a given ID whenever it sees {task} in a route declaration. 
 
         parent::boot();
     }

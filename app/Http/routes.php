@@ -1,54 +1,37 @@
-<?php
+<?php 
+/*
+|--------------------------------------------------------------------------
+| Routes File
+|--------------------------------------------------------------------------
+|
+| Here is where you will register all of the routes in an application.
+| It's a breeze. Simply tell Laravel the URIs it should respond to
+| and give it the controller to call when that URI is requested.
+|
+*/
+/*
+|--------------------------------------------------------------------------
+| Application Routes
+|--------------------------------------------------------------------------
+|
+| This route group applies the "web" middleware group to every route
+| it contains. The "web" middleware group is defined in your HTTP
+| kernel and includes session state, CSRF protection, and more.
+|
+*/
 
-use App\Task;
-use Illuminate\Http\Request;
+Route::group(['middleware' => ['web']], function() {
 
-/**
- * Display All Tasks
- */
-Route::get('/', function () {
-    // $tasks = Task::orderBy('createdBy', 'asc')->get();
-    
-    // return view('tasks', [
-    //     'tasks' => $tasks
-    // ]);
+	Route::get('/', function() {
+		return view('welcome');
+	})->middleware('guest');
 
-    return view('welcome');
-});
 
-/**
- * Add A New Task
- */
-Route::post('/task', function (Request $request) {
-    $validator = Validator::make($request->all(), [
-        'name' => 'required:max:255'
-    ]);
+	Route::get('/tasks', 'TaskController@index');
+	Route::get('/task', 'TaskController@store');
+	Route::delete('/task/{task}', 'TaskController@destroy');
 
-    if ($validator->fails()) {
-        return redirect('/')
-            ->withInput()
-            ->withErrors($validator);
-            // flash the errors from the given validator instance into the session 
-            // so that they can be accessed by $errors var in our view
-            // @include('common.errors')
-    }
-
-    //Create tasks here
-    $task = new Task;
-    $task->name = $request->name;
-    $task->save();
-
-    return redirect('/');
+	Route::auth();
 
 });
-
-/**
- * Delete An Existing Task
- */
-Route::delete('/task/{id}', function ($id) {
-    Task::findOrFail($id)->delete();
-    
-    return redirect('/');
-});
-
 ?>
